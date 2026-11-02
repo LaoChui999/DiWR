@@ -1,0 +1,25 @@
+# This implementation is intentionally excluded from public distributions.
+TurboLibiGWN.cu
+
+# Generated builds and local IDE state.
+/build*/
+/out/
+/bin/
+/lib/
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
+*.obj
+*.o
+*.exe
+*.dll
+*.lib
+*.pdb
+*.ilk
+*.exp
+*.log
+.vs/
+.idea/
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
