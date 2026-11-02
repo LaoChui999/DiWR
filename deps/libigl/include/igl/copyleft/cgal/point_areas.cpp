@@ -1,5 +1,9 @@
 #include "point_areas.h"
-#include "delaunay_triangulation.h"
+#include <Eigen/SVD>
+#include <cassert>
+#include <cmath>
+#include <utility>
+#include <vector>
 
 #include "../../colon.h"
 #include "../../slice.h"

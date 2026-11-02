@@ -47,8 +47,6 @@
  */
 
 #include "cukd/builder_thrust.h"
-#include "cukd/builder_bitonic.h"
-#include "cukd/builder_inplace.h"
 
 namespace cukd {
     /*! Builds a left-balanced k-d tree over the given data points,
@@ -121,25 +119,6 @@ namespace cukd {
         cudaStream_t stream = 0,
         GpuMemoryResource& memResource = defaultGpuMemResource())
     {
-#if defined(CUKD_BUILDER_INPLACE)
-        /* this is a _completely_ in-place builder; it will not allocate a
-           single byte of additional memory during building (or at any other
-           time); the downside is that for large array's it can be 10x-20x
-           slower . For refernece: for 10M float3 poitns, builder_inplace
-           takes about 4.3 seconds; builder_thrust will take about 200ms,
-           builder_bitonic will take about 390ms */
-        buildTree_inPlace<data_t, data_traits>
-            (d_points, numPoints, worldBounds, stream, memResource);
-
-#elif defined(CUKD_BUILDER_BITONIC)
-        /* this builder uses our tag-update algorithm, but uses bitonic sort
-           instead of thrust for soring. it doesn't require thrust, and
-           doesn't require additional memory other than 1 int for the tag, but
-           for large arrays (10M-ish points) is about 2x slwoer than than the
-           thrust variant */
-        buildTree_bitonic<data_t, data_traits>
-            (d_points, numPoints, worldBounds, stream, memResource);
-#else
         /* this builder uses our tag-update algorithm, and uses thrust for
             sorting the tag:node pairs. This is our fastest builder, but has
             the downside that thrust's sort will not properly work in a
@@ -147,7 +126,7 @@ namespace cukd {
             of!) temporary memory during sorting */
         buildTree_thrust<data_t, data_traits>
             (d_points, numPoints, worldBounds, stream, memResource);
-#endif
+
     }
 
     template<typename data_t, typename data_traits = default_data_traits<data_t>>
@@ -167,25 +146,6 @@ namespace cukd {
         cudaStream_t stream = 0,
         GpuMemoryResource& memResource = defaultGpuMemResource())
     {
-#if defined(CUKD_BUILDER_INPLACE)
-        /* this is a _completely_ in-place builder; it will not allocate a
-           single byte of additional memory during building (or at any other
-           time); the downside is that for large array's it can be 10x-20x
-           slower . For refernece: for 10M float3 poitns, builder_inplace
-           takes about 4.3 seconds; builder_thrust will take about 200ms,
-           builder_bitonic will take about 390ms */
-        buildTree_inPlace<data_t, data_traits>
-            (d_points, numPoints, worldBounds, stream, memResource);
-
-#elif defined(CUKD_BUILDER_BITONIC)
-        /* this builder uses our tag-update algorithm, but uses bitonic sort
-           instead of thrust for soring. it doesn't require thrust, and
-           doesn't require additional memory other than 1 int for the tag, but
-           for large arrays (10M-ish points) is about 2x slwoer than than the
-           thrust variant */
-        buildTree_bitonic<data_t, data_traits>
-            (d_points, numPoints, worldBounds, stream, memResource);
-#else
         /* this builder uses our tag-update algorithm, and uses thrust for
             sorting the tag:node pairs. This is our fastest builder, but has
             the downside that thrust's sort will not properly work in a
@@ -193,7 +153,7 @@ namespace cukd {
             of!) temporary memory during sorting */
         buildTree_DWG_thrust<data_t, data_traits>
             (d_points, d_normals, numPoints, worldBounds, stream, memResource);
-#endif
+
     }
 }
 

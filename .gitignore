@@ -1,6 +1,3 @@
-# This implementation is intentionally excluded from public distributions.
-TurboLibiGWN.cu
-
 # Generated builds and local IDE state.
 /build*/
 /out/
